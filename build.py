@@ -12,8 +12,10 @@ def b64(name):
 
 K_WHITE = "data:image/png;base64," + b64("k_white.png")
 K_BLACK = "data:image/png;base64," + b64("k_black.png")
+K_GLOSSY = "data:image/png;base64," + b64("k_glossy.png")
 WORDMARK_WHITE = "data:image/png;base64," + b64("wordmark_white.png")
 WORDMARK_BLACK = "data:image/png;base64," + b64("wordmark_black.png")
+WORDMARK_BLACK_BIG = "data:image/png;base64," + b64("wordmark_black_big.png")
 FAVICON = "data:image/png;base64," + b64("favicon.png")
 
 # ------------------------------------------------------------------ THEME CSS
@@ -31,7 +33,7 @@ THEME_CSS = r"""
   --lime:#C3F03A;
   --orange:#FF8A3D;
   --blue:#4DA2FF;
-  --hd:62px;
+  --hd:82px;
   --shadow-hard:6px 7px 0 var(--ink);
   --shadow-mag:6px 7px 0 var(--magenta);
   --shadow-cyan:6px 7px 0 var(--cyan);
@@ -83,8 +85,9 @@ h1,h2,h3,h4,.font-display{font-family:'Bricolage Grotesque',system-ui,sans-serif
 .hd::after{right:0;background:radial-gradient(circle at top right,transparent 22px,var(--ink) 22.5px)}
 .hd .container{display:flex;align-items:center;gap:32px;width:min(1280px,94vw)}
 .brand{display:flex;align-items:center;gap:10px}
-.brand img.k{height:34px;width:auto}
-.brand img.wm{height:26px;width:auto;margin-top:2px}
+.brand img.k{height:42px;width:auto;transition:transform .3s cubic-bezier(.3,1.6,.4,1)}
+.brand:hover img.k{transform:rotate(-12deg) scale(1.08)}
+.brand img.wm{height:48px;width:auto;margin-top:2px}
 .nav{display:flex;align-items:center;gap:6px;margin-left:auto}
 .nav a{
   position:relative;font-weight:600;font-size:14.5px;letter-spacing:.01em;
@@ -192,23 +195,43 @@ h1,h2,h3,h4,.font-display{font-family:'Bricolage Grotesque',system-ui,sans-serif
 
 /* doodles */
 .doodles{position:absolute;inset:0;pointer-events:none;z-index:1}
-.doodle{position:absolute;animation:float 7s ease-in-out infinite;transition:translate .35s cubic-bezier(.2,.6,.2,1);will-change:translate,transform}
-.doodle.d2{animation-duration:9s;animation-delay:-2s}
-.doodle.d3{animation-duration:11s;animation-delay:-4s}
-.doodle.spin{animation:spin 22s linear infinite}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(6deg)}}
+.doodle{
+  position:absolute;
+  animation:floatA 6s ease-in-out infinite;
+  transition:translate .4s cubic-bezier(.2,.6,.2,1);
+  will-change:translate,transform;
+}
+.doodle.d2{animation:floatB 8s ease-in-out infinite;animation-delay:-2s}
+.doodle.d3{animation:floatC 10s ease-in-out infinite;animation-delay:-4s}
+.doodle.spin{animation:spin 18s linear infinite}
+@keyframes floatA{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+  25%{transform:translateY(-14px) rotate(8deg) scale(1.06)}
+  50%{transform:translateY(-24px) rotate(-6deg) scale(.98)}
+  75%{transform:translateY(-10px) rotate(4deg) scale(1.03)}
+}
+@keyframes floatB{
+  0%,100%{transform:translate(0,0) rotate(0deg)}
+  33%{transform:translate(12px,-18px) rotate(-10deg)}
+  66%{transform:translate(-10px,-26px) rotate(8deg)}
+}
+@keyframes floatC{
+  0%,100%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(-14px,-22px) rotate(12deg) scale(1.08)}
+}
+@keyframes floatD{
+  0%,100%{transform:translate(0,0) rotate(0deg)}
+  25%{transform:translate(-8px,-12px) rotate(-6deg)}
+  50%{transform:translate(10px,-20px) rotate(8deg)}
+  75%{transform:translate(-6px,-8px) rotate(-3deg)}
+}
 @keyframes spin{to{transform:rotate(360deg)}}
 @supports (animation-timeline:scroll()){
   .doodle.drift{animation:drift linear;animation-timeline:scroll(root);}
   @keyframes drift{to{transform:translateY(-280px) rotate(180deg)}}
 }
 
-/* idle pulse on hero buttons */
-.hero .ctas .btn{animation:idlePulse 4.6s ease-in-out infinite}
-.hero .ctas .btn:nth-child(2){animation-delay:.6s}
-.hero .ctas .btn:nth-child(3){animation-delay:1.2s}
-.hero .ctas .btn:hover{animation:none}
-@keyframes idlePulse{0%,100%{transform:none}50%{transform:scale(1.018)}}
+/* (idle button pulse removed for steady, solid hero CTAs) */
 
 /* ===== MARQUEE ===== */
 .marquee{
@@ -389,7 +412,7 @@ h1,h2,h3,h4,.font-display{font-family:'Bricolage Grotesque',system-ui,sans-serif
 /* ===== FOOTER ===== */
 .foot{background:var(--ink);color:#fff;padding:80px 0 36px;position:relative;overflow:hidden}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;align-items:start}
-.foot .wm{height:64px;width:auto;margin-bottom:22px}
+.foot .wm{height:100px;width:auto;margin-bottom:22px}
 .foot h4{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--yellow);margin:0 0 16px}
 .foot ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;font-size:15.5px}
 .foot a:hover{color:var(--yellow)}
@@ -406,88 +429,96 @@ h1,h2,h3,h4,.font-display{font-family:'Bricolage Grotesque',system-ui,sans-serif
 .curtain.in{clip-path:circle(150% at 50% 50%);pointer-events:auto}
 .curtain.out{clip-path:circle(0% at 50% 50%);transition-duration:.45s}
 
-/* ===== SCROLL-DRIVEN SPLASH (index landing only) ===== */
-/* The splash-host is 180vh tall. .splash-stick sticks at top for ~1 viewport
-   so the user can scroll-morph the K mark, wordmark, and tag away before
-   they reach the home page below. JS sets --p (0 .. 1) based on scroll. */
+/* ===== SCROLL-DRIVEN SPLASH (matches the intro mp4) =====
+   Bright yellow background, giant iridescent K mark centered, big wordmark below.
+   The K floats gently while idle; on scroll it spins, scales down, and lifts
+   away while the wordmark and tagline fade. The body class .splash-active hides
+   the page header until the user has scrolled into the home page. */
 .splash-host{
-  height:180vh;position:relative;background:#0a0907;margin-top:calc(var(--hd) * -1);isolation:isolate;
+  height:200vh;position:relative;background:var(--yellow);
+  margin-top:calc(var(--hd) * -1);isolation:isolate;
 }
 .splash-stick{
   position:sticky;top:0;height:100vh;width:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 40%, #1a1812 0%, #0a0907 75%);
-  overflow:hidden;text-align:center;padding:24px;--p:0;
+  background:var(--yellow);
+  overflow:hidden;text-align:center;padding:8vh 24px 48px;--p:0;
 }
-.splash-orb{position:absolute;border-radius:50%;filter:blur(140px);pointer-events:none;will-change:transform}
-.splash-orb.o1{width:560px;height:560px;background:var(--magenta);top:-160px;left:-160px;opacity:.32;animation:orbA 9s ease-in-out infinite}
-.splash-orb.o2{width:560px;height:560px;background:var(--cyan);bottom:-180px;right:-180px;opacity:.32;animation:orbB 11s ease-in-out infinite}
-.splash-orb.o3{width:380px;height:380px;background:var(--lime);top:55%;left:30%;opacity:.22;animation:orbC 7s ease-in-out infinite}
-@keyframes orbA{0%,100%{transform:none}50%{transform:translate(80px,60px) scale(1.2)}}
-@keyframes orbB{0%,100%{transform:none}50%{transform:translate(-90px,-50px) scale(1.15)}}
-@keyframes orbC{0%,100%{transform:none}50%{transform:translate(-30px,30px) scale(.85)}}
-.splash-grid{
-  position:absolute;inset:0;opacity:.07;pointer-events:none;
-  background-image:linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px);
-  background-size:80px 80px;
-  -webkit-mask-image:radial-gradient(circle at center, #000 30%, transparent 80%);
-  mask-image:radial-gradient(circle at center, #000 30%, transparent 80%);
+/* faint radial vignette so the K pops */
+.splash-stick::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 45%, rgba(255,255,255,.35) 0%, rgba(244,225,26,0) 55%);
 }
-.splash-content{position:relative;z-index:3;max-width:780px}
-.splash-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
-  color:rgba(255,255,255,.62);margin-bottom:36px;
-  padding:8px 16px;border:1px solid rgba(255,255,255,.18);border-radius:999px;backdrop-filter:blur(8px);
+/* splash sparks — same as hero doodles, just scattered around the centerpiece */
+.splash-spark{
+  position:absolute;z-index:2;pointer-events:none;opacity:.92;
+  animation:floatA 5.6s ease-in-out infinite;
+  transition:translate .4s cubic-bezier(.2,.6,.2,1);will-change:translate,transform;
 }
-.splash-eyebrow .star{color:var(--yellow)}
+.splash-spark:nth-child(2n){animation:floatB 6.8s ease-in-out infinite;animation-delay:-1.2s}
+.splash-spark:nth-child(3n){animation:floatC 7.4s ease-in-out infinite;animation-delay:-2.3s}
+.splash-spark:nth-child(4n){animation:floatD 5.2s ease-in-out infinite;animation-delay:-3.1s}
+
+.splash-content{
+  position:relative;z-index:3;max-width:1300px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;
+}
+
+/* GIANT glossy K — sized as part of a stacked logo unit with the wordmark */
 .splash-bigk{
-  width:clamp(160px,18vw,240px);height:auto;display:block;margin:0 auto;
-  will-change:transform,opacity;filter:drop-shadow(0 20px 60px rgba(244,225,26,.18));
-  transform: scale(calc(1 - var(--p) * 0.55)) rotate(calc(var(--p) * 540deg)) translateY(calc(var(--p) * -120px));
+  width:clamp(260px,32vw,460px);height:auto;display:block;margin:0 auto;
+  will-change:transform,opacity;
+  filter:drop-shadow(0 30px 80px rgba(0,0,0,.18));
+  /* The brand K is drawn as a stylized organic shape that leans naturally inside
+     the square. Counter-rotating the image makes the K "stem" stand more upright. */
+  rotate:-15deg;
+  animation:kFloat 6s ease-in-out infinite;
+}
+@keyframes kFloat{0%,100%{translate:0 0}50%{translate:0 -16px}}
+
+/* GIANT wordmark — dominates the splash, sized like a brand mark, sits tight under the K */
+.splash-bigwm{
+  width:clamp(440px,58vw,1080px);height:auto;display:block;margin:8px auto 0;
+  will-change:transform,opacity;
+  filter:drop-shadow(0 8px 0 rgba(0,0,0,.08));
+}
+
+/* Scroll-driven transforms: JS sets --p (0..1) on .splash-stick. */
+.splash-bigk{
+  transform: scale(calc(1 - var(--p) * 0.65)) rotate(calc(var(--p) * 540deg)) translateY(calc(var(--p) * -160px));
   opacity: calc(1 - var(--p) * 1.3);
 }
 .splash-bigwm{
-  height:clamp(48px,5vw,80px);width:auto;display:block;margin:34px auto 18px;
-  will-change:transform,opacity;
-  transform: translateY(calc(var(--p) * -80px)) scale(calc(1 - var(--p) * 0.4));
+  transform: translateY(calc(var(--p) * -120px)) scale(calc(1 - var(--p) * 0.45));
   opacity: calc(1 - var(--p) * 1.9);
 }
-.splash-tag{
-  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
-  font-size:clamp(22px,2.6vw,38px);line-height:1.1;letter-spacing:-.02em;
-  color:#fff;margin:14px auto 10px;max-width:640px;
-  will-change:transform,opacity;
-  transform: translateY(calc(var(--p) * -60px));
-  opacity: calc(1 - var(--p) * 1.9);
+.splash-eyebrow{
+  opacity: calc(1 - var(--p) * 2.6);
 }
-.splash-tag .hl{display:inline-block;padding:0 .18em;border-radius:8px;transform:rotate(-1.5deg)}
-.splash-tag .hl.mag{background:var(--magenta);color:var(--ink)}
-.splash-tag .hl.cyan{background:var(--cyan);color:var(--ink)}
-.splash-tag .hl.purple{background:var(--purple);color:#fff}
-.splash-sub{
-  font-family:'Hanken Grotesk',sans-serif;font-size:15.5px;
-  color:rgba(255,255,255,.62);margin:6px auto 0;max-width:520px;line-height:1.55;
-  opacity: calc(1 - var(--p) * 2.4);
+.splash-spark{
+  opacity: calc(.92 - var(--p) * 1.6);
 }
-.splash-eyebrow{opacity: calc(1 - var(--p) * 2.4)}
+
 .scroll-hint{
-  position:absolute;bottom:48px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
   font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;
-  color:rgba(255,255,255,.55);display:flex;flex-direction:column;align-items:center;gap:14px;z-index:3;
-  opacity: calc(1 - var(--p) * 3);
+  color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:12px;z-index:3;
+  opacity: calc(.9 - var(--p) * 3);
 }
 .scroll-hint .mouse{
-  width:24px;height:38px;border:1.5px solid rgba(255,255,255,.55);border-radius:14px;position:relative;
+  width:26px;height:42px;border:2px solid var(--ink);border-radius:15px;position:relative;background:rgba(255,255,255,.55);
 }
 .scroll-hint .mouse::after{
-  content:"";position:absolute;top:7px;left:50%;width:3px;height:7px;background:rgba(255,255,255,.7);
+  content:"";position:absolute;top:7px;left:50%;width:3px;height:8px;background:var(--ink);
   border-radius:2px;transform:translateX(-50%);animation:mouseDot 1.4s ease-in-out infinite;
 }
-@keyframes mouseDot{0%,100%{transform:translate(-50%,0);opacity:1}50%{transform:translate(-50%,12px);opacity:.3}}
-/* Mask the page header behind the splash until user scrolls into the second viewport */
+@keyframes mouseDot{0%,100%{transform:translate(-50%,0);opacity:1}50%{transform:translate(-50%,14px);opacity:.3}}
+
+/* Hide page header until user has scrolled into the home page */
 .splash-host ~ .hd{transition: opacity .35s ease}
 body.splash-active .hd{opacity:0;pointer-events:none}
+
 
 /* sticky watermark K */
 .watermark{
@@ -502,34 +533,7 @@ body.splash-active .hd{opacity:0;pointer-events:none}
 
 /* ===== ADVANCED SCROLL-DRIVEN ANIMATIONS ===== */
 @supports (animation-timeline:view()) and (animation-timeline:scroll()){
-  /* Hero text scales down and fades as user scrolls past */
-  .hero h1{
-    animation: heroOutH1 linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 100%;
-  }
-  @keyframes heroOutH1{
-    from{transform:none;opacity:1;letter-spacing:-.015em}
-    to{transform:translateY(-90px) scale(.7);opacity:.18;letter-spacing:.04em}
-  }
-  .hero .sub{
-    animation: heroOutSub linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 70%;
-  }
-  @keyframes heroOutSub{
-    from{transform:none;opacity:1}
-    to{transform:translateY(-60px);opacity:0}
-  }
-  .hero .ctas{
-    animation: heroOutCtas linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 85%;
-  }
-  @keyframes heroOutCtas{
-    from{transform:none;opacity:1}
-    to{transform:translateY(-40px) scale(.9);opacity:.2}
-  }
+  /* (hero scroll-out animations removed — they were dimming the hero buttons mid-scroll) */
 
   /* 3D card entries override the simpler card-in */
   .card{
@@ -640,13 +644,6 @@ body.splash-active .hd{opacity:0;pointer-events:none}
   }
   @keyframes noticeKfloat{from{transform:rotate(-15deg) scale(.9)}to{transform:rotate(25deg) scale(1.2)}}
 
-  /* Buttons in hero get a final flourish */
-  .hero .ctas .btn{
-    animation: idlePulse 4.6s ease-in-out infinite, btnRiseIn linear both;
-    animation-timeline: auto, view();
-    animation-range: auto, entry 0% cover 30%;
-  }
-  @keyframes btnRiseIn{from{opacity:0;transform:translateY(30px) rotate(-3deg)}to{opacity:1;transform:none}}
 }
 
 /* ===== STICKY PILLAR SHOWCASE (sticky CSS based) ===== */
@@ -746,31 +743,50 @@ COMMON_JS = r"""
     updateSplash();
   }
 
-  // === Cursor-reactive doodle parallax. Each .doodle drifts a little
-  //     based on mouse position, weighted by data-parallax (default 1).
-  const doodles = document.querySelectorAll('.doodle');
+  // === Negative-magnet doodle interaction. Doodles drift AWAY from the cursor
+  //     when it gets close, with force scaled by data-parallax and proximity.
+  //     Ambient float keyframes keep them moving when the cursor isn't around.
+  const doodles = document.querySelectorAll('.doodle, .splash-spark');
   if(doodles.length){
-    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let mx = -9999, my = -9999;   // start off-screen so doodles rest at 0
     let raf=false;
+    const RADIUS = 220;            // proximity radius in px
+    const MAX_PUSH = 90;           // max displacement at zero distance
     const apply = ()=>{
-      const cx = window.innerWidth/2, cy = window.innerHeight/2;
-      const dx = (mx - cx) / cx;  // -1..1
-      const dy = (my - cy) / cy;
-      doodles.forEach(d=>{
-        const s = parseFloat(d.dataset.parallax || '1');
-        // 'translate' (the individual CSS prop) keeps 'transform' free for keyframe animations
-        d.style.translate = (dx * 24 * s).toFixed(2)+'px ' + (dy * 24 * s).toFixed(2)+'px';
-      });
+      for(let i=0; i<doodles.length; i++){
+        const d = doodles[i];
+        const r = d.getBoundingClientRect();
+        if(r.width === 0) continue;          // not laid out yet
+        const cx = r.left + r.width/2;
+        const cy = r.top  + r.height/2;
+        let dx = cx - mx;
+        let dy = cy - my;
+        const dist = Math.hypot(dx, dy);
+        if(dist < RADIUS && dist > 0.01){
+          const s = parseFloat(d.dataset.parallax || '1');
+          // proximity 0..1 (1 when cursor is right on doodle)
+          const prox = 1 - (dist / RADIUS);
+          const force = prox * prox * MAX_PUSH * s;   // squared falloff feels springier
+          const ux = dx / dist, uy = dy / dist;       // unit vector from cursor to doodle
+          d.style.translate = (ux * force).toFixed(1)+'px ' + (uy * force).toFixed(1)+'px';
+        } else {
+          d.style.translate = '0 0';
+        }
+      }
       raf=false;
     };
     window.addEventListener('mousemove', e=>{
       mx = e.clientX; my = e.clientY;
       if(!raf){ raf=true; requestAnimationFrame(apply); }
     }, {passive:true});
+    window.addEventListener('mouseleave', ()=>{
+      mx = -9999; my = -9999;
+      if(!raf){ raf=true; requestAnimationFrame(apply); }
+    });
     // Touch fallback: nudge from device orientation if available
     window.addEventListener('deviceorientation', e=>{
-      mx = window.innerWidth/2 + (e.gamma||0) * 4;
-      my = window.innerHeight/2 + (e.beta||0) * 2;
+      mx = window.innerWidth/2 + (e.gamma||0) * 6;
+      my = window.innerHeight/2 + (e.beta||0)  * 3;
       if(!raf){ raf=true; requestAnimationFrame(apply); }
     });
   }
@@ -985,33 +1001,64 @@ BLOB_SVG = '<svg viewBox="0 0 100 100" width="100" height="100" xmlns="http://ww
 def doodles_hero():
     return f"""
     <div class="doodles" aria-hidden="true">
-      <div class="doodle drift"   data-parallax="1.6" style="top:18%;left:6%;color:var(--magenta)">{STAR_SVG}</div>
-      <div class="doodle d2 drift" data-parallax="1.2" style="top:30%;right:8%;color:var(--cyan)">{SMILE_SVG}</div>
-      <div class="doodle d3 spin"  data-parallax="2.2" style="bottom:14%;left:9%;color:var(--purple)">{SPARK_SVG}</div>
-      <div class="doodle d2"      data-parallax="2.0" style="top:65%;right:14%;color:var(--lime)">{SQUIG_SVG}</div>
-      <div class="doodle drift"   data-parallax="1.4" style="top:8%;right:28%;color:var(--orange)">{SPARK_SVG}</div>
-      <div class="doodle d3"      data-parallax="0.8" style="bottom:24%;right:6%;color:var(--blue);opacity:.55">{BLOB_SVG}</div>
+      <div class="doodle"     data-parallax="1.6" style="top:14%;left:5%;color:var(--magenta);width:62px;height:62px">{STAR_SVG}</div>
+      <div class="doodle d2"  data-parallax="1.2" style="top:24%;right:7%;color:var(--cyan);width:64px;height:64px">{SMILE_SVG}</div>
+      <div class="doodle d3 spin" data-parallax="2.2" style="bottom:14%;left:8%;color:var(--purple);width:44px;height:44px">{SPARK_SVG}</div>
+      <div class="doodle d2"  data-parallax="2.0" style="top:62%;right:12%;color:var(--lime);width:84px;height:64px">{SQUIG_SVG}</div>
+      <div class="doodle"     data-parallax="1.4" style="top:6%;right:26%;color:var(--orange);width:42px;height:42px">{SPARK_SVG}</div>
+      <div class="doodle d3"  data-parallax="0.9" style="bottom:22%;right:5%;color:var(--blue);opacity:.5;width:90px;height:90px">{BLOB_SVG}</div>
+      <div class="doodle d2"  data-parallax="1.8" style="top:38%;left:18%;color:var(--ink);width:36px;height:36px">{SPARK_SVG}</div>
+      <div class="doodle"     data-parallax="1.3" style="bottom:8%;left:32%;color:var(--magenta);width:38px;height:38px">{STAR_SVG}</div>
+      <div class="doodle d3"  data-parallax="1.5" style="top:50%;left:4%;color:var(--cyan);opacity:.75;width:74px;height:42px">{SQUIG_SVG}</div>
+      <div class="doodle"     data-parallax="1.1" style="top:78%;left:42%;color:var(--purple);width:36px;height:36px">{SPARK_SVG}</div>
+      <div class="doodle d2 spin" data-parallax="2.0" style="top:12%;left:42%;color:var(--orange);width:32px;height:32px">{SPARK_SVG}</div>
+      <div class="doodle"     data-parallax="1.7" style="bottom:38%;left:46%;color:var(--lime);width:48px;height:48px">{STAR_SVG}</div>
     </div>
     """
 
 # ------------------------------------------------------------------ SPLASH (index only)
+def _spark(svg, klass, color, top, left, size, parallax):
+    pos = f"top:{top};left:{left}" if left else f"top:{top}"
+    style = f"width:{size}px;height:{size}px;color:{color};{pos}"
+    return svg.replace('<svg', f'<svg class="doodle splash-spark {klass}" data-parallax="{parallax}" style="{style}"')
+
+SPLASH_DOODLES = "\n    ".join([
+    # left column
+    _spark(STAR_SVG,  "",  "var(--magenta)", "10%",  "6%",  64, 1.6),
+    _spark(SPARK_SVG, "",  "var(--ink)",     "22%",  "16%", 36, 1.2),
+    _spark(SQUIG_SVG, "",  "var(--purple)",  "32%",  "4%",  74, 1.4),
+    _spark(SMILE_SVG, "",  "var(--cyan)",    "44%",  "12%", 54, 1.5),
+    _spark(SPARK_SVG, "",  "var(--orange)",  "58%",  "6%",  46, 1.8),
+    _spark(BLOB_SVG,  "",  "var(--lime)",    "70%",  "16%", 76, 1.2),
+    _spark(STAR_SVG,  "",  "var(--purple)",  "82%",  "8%",  44, 1.4),
+    _spark(SPARK_SVG, "",  "var(--magenta)", "92%",  "24%", 30, 2.0),
+    # right column
+    _spark(STAR_SVG,  "",  "var(--cyan)",    "8%",   "auto;right:8%",  58, 1.5),
+    _spark(SPARK_SVG, "",  "var(--purple)",  "20%",  "auto;right:18%", 34, 1.7),
+    _spark(SMILE_SVG, "",  "var(--lime)",    "30%",  "auto;right:6%",  56, 1.3),
+    _spark(SQUIG_SVG, "",  "var(--magenta)", "44%",  "auto;right:14%", 70, 1.4),
+    _spark(BLOB_SVG,  "",  "var(--orange)",  "58%",  "auto;right:6%",  72, 1.0),
+    _spark(STAR_SVG,  "",  "var(--ink)",     "72%",  "auto;right:18%", 40, 1.6),
+    _spark(SPARK_SVG, "",  "var(--cyan)",    "84%",  "auto;right:10%", 48, 1.9),
+    _spark(STAR_SVG,  "",  "var(--lime)",    "94%",  "auto;right:32%", 32, 1.3),
+    # top & bottom edges
+    _spark(BLOB_SVG,  "",  "var(--magenta)", "4%",   "38%", 38, 1.1),
+    _spark(SPARK_SVG, "",  "var(--purple)",  "4%",   "auto;right:32%", 40, 1.4),
+    _spark(STAR_SVG,  "",  "var(--orange)",  "96%",  "42%", 38, 1.2),
+    _spark(SQUIG_SVG, "",  "var(--cyan)",    "96%",  "auto;right:38%", 62, 1.6),
+])
+
 SPLASH_HTML = f"""
 <section class="splash-host" id="splash-host">
   <div class="splash-stick" id="splash-stick">
-    <span class="splash-orb o1"></span>
-    <span class="splash-orb o2"></span>
-    <span class="splash-orb o3"></span>
-    <div class="splash-grid"></div>
+    {SPLASH_DOODLES}
     <div class="splash-content">
-      <span class="splash-eyebrow"><span class="star">&#10022;</span> Welcome to Kraftics</span>
-      <img src="{K_WHITE}" alt="" class="splash-bigk">
-      <img src="{WORDMARK_WHITE}" alt="Kraftics" class="splash-bigwm">
-      <p class="splash-tag">Grow <span class="hl mag">Smarter.</span> Build <span class="hl cyan">Better.</span> Scale <span class="hl purple">Faster.</span></p>
-      <p class="splash-sub">Organic marketing, AI automation, and websites that do real work. Built for businesses that want growth on purpose, not by accident.</p>
+      <img src="{K_GLOSSY}" alt="" class="splash-bigk">
+      <img src="{WORDMARK_BLACK_BIG}" alt="Kraftics" class="splash-bigwm">
     </div>
     <div class="scroll-hint" aria-hidden="true">
       <div class="mouse"></div>
-      <span>Scroll to enter</span>
+      <span>Scroll to explore</span>
     </div>
   </div>
 </section>
